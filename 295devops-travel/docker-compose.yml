@@ -1,0 +1,34 @@
+version: '3.3'
+services:
+  php:
+    container_name: apache2_php
+    build: .
+    volumes:
+      - "./bootcamp-devops-2023/295devops-travel-lamp:/var/www/html"
+    ports:
+      - "8080:80"
+    depends_on:
+      - db_server
+    networks:
+      - app-network
+  db_server:
+    image: mysql/mysql-server:8.0.23
+    container_name: mysql
+    environment:
+      - MYSQL_DATABASE=devopstravel #creará una base de datos con ese nombre
+      - MYSQL_ROOT_PASSWORD=code #clave de administrador del servidor MySQL
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_USER=codeuser
+      - MYSQL_PASSWORD=codepass
+    ports:
+      - "3306:3306"
+    volumes:
+      - data:/var/lib/mysql
+      - ./bootcamp-devops-2023/295devops-travel-lamp/database/devopstravel.sql:/docker-entrypoint-initdb.d/B.sql
+    networks:
+      - app-network
+volumes:
+  data:
+networks:
+  app-network:
+    driver: bridge
